@@ -116,6 +116,4 @@ If you’ve made personal edits, **back them up first**.
 
 MIT — use it freely, modify as needed. Star the repo if you find it helpful ⭐
 
-```
-
 
