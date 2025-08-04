@@ -1,6 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
 # Ayush's Ultimate Zsh Environment Installer
 # ------------------------------------------
 
@@ -8,12 +7,6 @@ set -e
 
 BACKUP_DIR="$HOME/zsh-backup"
 FONTS_DIR="$HOME/.local/share/fonts"
-=======
-# Ayush's Ubuntu Zsh Installer
-# Location-independent script to install Zsh environment
-
-echo -e "\n🔧 Installing required tools..."
->>>>>>> ba667cbe9e97b3f084725f8f191fc79cbf408fb1
 
 # --- Install packages ---
 sudo apt update
@@ -58,7 +51,6 @@ declare -A FILES=(
   ["zoxide"]="$HOME/.local/share/zoxide"
 )
 
-<<<<<<< HEAD
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -66,43 +58,30 @@ NC='\033[0m'
 
 echo -e "${YELLOW}🔁 Starting full Zsh environment install...${NC}"
 
-# Backup and restore all components
-for key in "${!RESTORE_TARGETS[@]}"; do
-  src="$BACKUP_DIR/$key"
-  dest="${RESTORE_TARGETS[$key]}"
-
-  if [ -e "$src" ]; then
-    if [ -e "$dest" ]; then
-      echo -e "${RED}🛑 $dest already exists. Creating backup at $dest.restore.bak...${NC}"
-      cp -r "$dest" "$dest.restore.bak"
-    fi
-
-    echo -e "${GREEN}✅ Restoring $key → $dest${NC}"
-=======
 for src in "${!FILES[@]}"; do
   dest="${FILES[$src]}"
   if [ -e "./$src" ]; then
-    echo "📁 Restoring $src → $dest"
->>>>>>> ba667cbe9e97b3f084725f8f191fc79cbf408fb1
+    echo -e "${GREEN}✅ Restoring $src → $dest${NC}"
     mkdir -p "$(dirname "$dest")"
     cp -r "./$src" "$dest"
   else
-    echo "⚠️  Missing: $src — skipping"
+    echo -e "${YELLOW}⚠️  Missing: $src — skipping.${NC}"
   fi
 done
 
-<<<<<<< HEAD
-# Set Zsh as default shell
+# --- Set Zsh as default ---
 echo -e "${YELLOW}🔧 Setting Zsh as default shell...${NC}"
 chsh -s "$(which zsh)"
 
-# Install starship if not present
+# --- Install Starship prompt ---
 if ! command -v starship &>/dev/null; then
   echo -e "${YELLOW}🌟 Installing Starship prompt...${NC}"
   curl -sS https://starship.rs/install.sh | sh -s -- -y
+else
+  echo -e "${GREEN}✅ Starship already installed.${NC}"
 fi
 
-# Install Nerd Font (JetBrainsMono)
+# --- Install Nerd Font (JetBrainsMono) ---
 echo -e "${YELLOW}🔤 Installing JetBrainsMono Nerd Font...${NC}"
 mkdir -p "$FONTS_DIR"
 curl -L -o /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
@@ -110,25 +89,19 @@ unzip -qo /tmp/JetBrainsMono.zip -d "$FONTS_DIR"
 fc-cache -fv > /dev/null
 rm /tmp/JetBrainsMono.zip
 
-# Install starship gruvbox-rainbow preset
+# --- Starship preset ---
 echo -e "${YELLOW}🎨 Applying Starship gruvbox-rainbow preset...${NC}"
 mkdir -p ~/.config
 starship preset gruvbox-rainbow -o ~/.config/starship.toml
 
-# Install zoxide if not present
+# --- Install zoxide if needed ---
 if ! command -v zoxide &>/dev/null; then
   echo -e "${YELLOW}📂 Installing zoxide...${NC}"
   curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+else
+  echo -e "${GREEN}✅ Zoxide already installed.${NC}"
 fi
 
 echo -e "\n${GREEN}🎉 Full install complete!"
 echo -e "${YELLOW}➡️  Run this to apply your config: ${NC}source ~/.zshrc"
-=======
-# --- Set Zsh as default ---
-if [[ "$SHELL" != "/usr/bin/zsh" ]]; then
-  echo -e "\n⚙️ Changing shell to zsh..."
-  chsh -s /usr/bin/zsh
-fi
 
-echo -e "\n🎉 Done! Run this to apply your new config:\n\n  source ~/.zshrc\n"
->>>>>>> ba667cbe9e97b3f084725f8f191fc79cbf408fb1
