@@ -55,3 +55,36 @@ chmod +x install-zsh.sh
 ./install-zsh.sh
 source ~/.zshrc
 
+
+## 🧹 Uninstallation
+
+
+```bash
+./uninstall-zsh.sh
+```
+
+This script will:
+
+* Restore your default shell to **Bash**
+* Remove:
+
+  * `.zshrc`
+  * Zinit plugins and configs
+  * fzf and its configs
+  * NVM and Node paths
+  * Starship binary and its config
+  * JetBrainsMono Nerd Font files
+  * Zoxide binary and data
+* Clear font cache for a clean terminal state
+
+---
+
+### ⚠️ Warning
+
+This **permanently deletes** all related configs and binaries.
+If you made personal edits, **back them up** before running.
+
+---
+
+
+
