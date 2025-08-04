@@ -1,53 +1,50 @@
 #!/bin/bash
 
-# Ayush's Zsh Uninstaller Script
-# -------------------------------
+echo "🧼 Uninstalling custom Zsh environment..."
 
-set -e
-
-echo "⚠️  This will completely remove your custom Zsh setup, config, fonts, Starship, and more."
-
-read -p "Are you sure you want to continue? (y/N): " confirm
-if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-  echo "❌ Uninstall aborted."
-  exit 1
+# --- Restore default shell ---
+if [ "$SHELL" != "/bin/bash" ]; then
+  echo "🔁 Changing default shell back to Bash..."
+  chsh -s /bin/bash
 fi
 
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
-
-# Restore shell to bash
-echo -e "${YELLOW}🔁 Switching default shell back to bash...${NC}"
-chsh -s /bin/bash
-
-# Remove custom config files and directories
-echo -e "${YELLOW}🧹 Removing configs and plugins...${NC}"
-rm -rf ~/.zshrc
-rm -rf ~/.local/share/zinit
-rm -rf ~/.fzf
-rm -rf ~/.fzf.zsh
-rm -rf ~/.nvm
-rm -rf ~/.local/share/zoxide
+# --- Remove Zsh config files ---
+echo "🗑️ Removing configs..."
+rm -f ~/.zshrc
+rm -f ~/.fzf.zsh
 rm -rf ~/.config/starship.toml
+rm -rf ~/.local/share/zinit
+rm -rf ~/.local/share/zoxide
+rm -rf ~/.nvm
 
-# Remove Starship if installed
-if command -v starship &>/dev/null; then
-  echo -e "${YELLOW}🗑️  Removing Starship binary...${NC}"
-  rm -f ~/.cargo/bin/starship
+# --- Remove fzf if installed manually ---
+if [ -d "$HOME/.fzf" ]; then
+  echo "🗑️ Removing fzf..."
+  rm -rf ~/.fzf
 fi
 
-# Remove Nerd Fonts
-FONTS_DIR="$HOME/.local/share/fonts"
-echo -e "${YELLOW}🧽 Cleaning JetBrainsMono Nerd Font...${NC}"
-find "$FONTS_DIR" -type f -name '*JetBrainsMono*.ttf' -delete || true
-fc-cache -fv > /dev/null
-
-# Remove zoxide binary if installed via script
-if command -v zoxide &>/dev/null; then
-  echo -e "${YELLOW}🗑️  Removing zoxide binary...${NC}"
-  rm -f ~/.local/bin/zoxide
-  rm -rf ~/.local/share/zoxide
+# --- Remove Starship binary ---
+if command -v starship &> /dev/null; then
+  echo "🗑️ Removing Starship..."
+  rm -f ~/.cargo/bin/starship 2>/dev/null || true
+  sudo rm -f /usr/local/bin/starship 2>/dev/null || true
 fi
 
-echo -e "${GREEN}✅ Uninstall complete. You may want to restart your terminal or log out & back in."
+# --- Remove JetBrainsMono Nerd Font ---
+FONT_DIR="$HOME/.local/share/fonts"
+if compgen -G "$FONT_DIR/JetBrainsMonoNerdFont-*.ttf" > /dev/null; then
+  echo "🗑️ Removing JetBrainsMono Nerd Font..."
+  find "$FONT_DIR" -iname "JetBrainsMonoNerdFont-*" -delete
+  fc-cache -f
+fi
+
+# --- Remove installed packages (optional) ---
+echo "❌ Removing installed packages (optional)..."
+sudo apt remove --purge -y \
+  zsh  curl  fzf zoxide bat eza ugrep
+
+sudo apt autoremove -y
+sudo apt clean
+
+echo "✅ Done. All related packages, configs, and fonts removed."
+
