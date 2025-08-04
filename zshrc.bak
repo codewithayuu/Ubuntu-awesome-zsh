@@ -1,0 +1,125 @@
+# ~/.zshrc — Final Zinit + Starship + fzf + Fish-style Completion Setup
+
+# ─── ENVIRONMENT PATHs ───
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$HOME/flutter/bin:$HOME/Applications/depot_tools:$HOME/.spicetify:$HOME/.jetbrains/android-studio/bin:$HOME/.local/share/nvm/v20.19.4/bin:$HOME/.fzf/bin:$HOME/.cargo/bin:$PATH"
+
+# ─── NODE.JS / NVM ───
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+nvm use 20 --silent > /dev/null
+
+# ─── TERMINAL TWEAKS ───
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export TERM="xterm-256color"
+export SHELL="/usr/bin/zsh"
+
+# ─── ZINIT INITIALIZATION ───
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# ─── FZF KEYBINDINGS (Fish-style Ctrl+R) ───
+[[ -f ~/.fzf/shell/key-bindings.zsh ]] && source ~/.fzf/shell/key-bindings.zsh
+[[ -f ~/.fzf/shell/completion.zsh ]] && source ~/.fzf/shell/completion.zsh
+bindkey '^R' fzf-history-widget
+
+# ─── FISH-LIKE TAB COMPLETION (fzf-tab) ───
+zstyle ':completion:*' menu yes select
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*:messages' format '%F{yellow}%d%f'
+zstyle ':completion:*:warnings' format '%F{red}No matches for:%f %d'
+zstyle ':completion:*' group-name ''
+zstyle ':fzf-tab:*' fzf-command fzf
+zstyle ':fzf-tab:*' prefix ''
+zstyle ':fzf-tab:*' continuous-trigger 'TAB'
+zstyle ':fzf-tab:*' single-group color header
+zstyle ':fzf-tab:*' show-group always
+zstyle ':fzf-tab:*' fzf-flags --height=50% --layout=reverse --border --info=inline
+
+# ─── STARSHIP PROMPT ───
+zinit ice as"command" from"gh-r"
+zinit for starship/starship
+eval "$(starship init zsh)"
+
+# ─── PRODUCTIVITY PLUGINS ───
+zinit ice wait lucid
+zinit for zsh-users/zsh-autosuggestions
+
+zinit ice wait lucid
+zinit for zsh-users/zsh-syntax-highlighting
+
+zinit ice wait lucid
+zinit for zsh-users/zsh-completions
+
+zinit ice wait lucid
+zinit for Aloxaf/fzf-tab
+
+zinit ice wait lucid
+zinit for zsh-users/zsh-history-substring-search
+
+zinit ice wait lucid
+zinit for MichaelAquilina/zsh-you-should-use
+
+zinit ice wait lucid
+zinit for lukechilds/zsh-better-npm-completion
+
+zinit ice wait lucid
+zinit for ajeetdsouza/zoxide
+
+# ─── ZOXIDE INIT ───
+[ -f /etc/profile.d/zoxide.sh ] && source /etc/profile.d/zoxide.sh
+eval "$(zoxide init zsh)"
+
+# ─── ZSH-AUTOCOMPLETE (Smart Fish-style autosuggestions) ───
+zinit ice wait lucid
+zinit for marlonrichert/zsh-autocomplete
+
+# ─── MANPAGES WITH BAT ───
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"
+
+# ─── ALIASES ───
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias please='sudo'
+alias ip='ip -color'
+alias wget='wget -c'
+alias cat='batcat --style header --style snip --style changes --style header'
+alias grep='ugrep --color=auto'
+alias egrep='ugrep -E --color=auto'
+alias fgrep='ugrep -F --color=auto'
+
+# Fancy ls using eza if available
+if command -v eza &> /dev/null; then
+  alias ls='eza -al --color=always --group-directories-first --icons'
+  alias la='eza -a --color=always --group-directories-first --icons'
+  alias ll='eza -l --color=always --group-directories-first --icons'
+  alias lt='eza -aT --color=always --group-directories-first --icons'
+else
+  alias ls='ls --color=auto'
+  alias la='ls -A'
+  alias ll='ls -alF'
+  alias l='ls -CF'
+fi
+
+# ─── FUNCTIONS ───
+alert_notify() {
+  local status_icon
+  [[ $? == 0 ]] && status_icon="terminal" || status_icon="error"
+  notify-send --urgency=low -i "$status_icon" "$(history | tail -n1 | sed -E 's/^\s*[0-9]+\s*//;s/[;&|]\s*alert$//')"
+}
+
+backup() { cp "$1" "$1.bak"; }
+
+# ─── HISTORY BEHAVIOR ───
+HISTFILE=~/.zsh_history
+HISTSIZE=1000
+SAVEHIST=2000
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt SHARE_HISTORY
+alias history='builtin history -E'
+
