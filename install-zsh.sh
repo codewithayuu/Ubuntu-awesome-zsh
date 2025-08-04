@@ -1,47 +1,68 @@
 #!/bin/bash
 
-# Ayush's Zsh Config install Script
-# ----------------------------------
+# Ayush's Ubuntu Zsh Installer
+# Location-independent script to install Zsh environment
 
-BACKUP_DIR="$HOME/zsh-backup"
+echo -e "\n🔧 Installing required tools..."
 
-# Paths to restore (key = source in backup, value = destination)
-declare -A RESTORE_TARGETS=(
-  [".zshrc"]="$HOME/.zshrc"
-  ["zinit"]="$HOME/.local/share/zinit"
-  ["fzf"]="$HOME/.fzf"
+# --- Install packages ---
+sudo apt update
+sudo apt install -y git curl unzip zoxide fzf bat eza ugrep zsh
+
+# --- Install Zinit ---
+ZINIT_DIR="$HOME/.local/share/zinit/zinit.git"
+if [ ! -d "$ZINIT_DIR" ]; then
+  echo "📦 Installing Zinit..."
+  mkdir -p "$(dirname "$ZINIT_DIR")"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_DIR"
+else
+  echo "✅ Zinit already installed."
+fi
+
+# --- Install NVM ---
+NVM_DIR="$HOME/.nvm"
+if [ ! -d "$NVM_DIR" ]; then
+  echo "📦 Installing NVM..."
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+else
+  echo "✅ NVM already installed."
+fi
+
+# --- Restore fzf ---
+if [ ! -d "$HOME/.fzf" ]; then
+  echo "📦 Installing fzf from repo..."
+  cp -r ./fzf "$HOME/.fzf"
+  "$HOME/.fzf/install" --all
+else
+  echo "✅ fzf already installed."
+fi
+
+# --- Copy Dotfiles ---
+echo -e "\n📂 Restoring config files..."
+
+declare -A FILES=(
+  ["zshrc.bak"]="$HOME/.zshrc"
   [".fzf.zsh"]="$HOME/.fzf.zsh"
   ["nvm"]="$HOME/.nvm"
+  ["zinit"]="$HOME/.local/share/zinit"
   ["zoxide"]="$HOME/.local/share/zoxide"
 )
 
-# Terminal colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No color
-
-echo -e "${YELLOW}🔁 Starting Zsh environment restore...${NC}"
-
-for key in "${!RESTORE_TARGETS[@]}"; do
-  src="$BACKUP_DIR/$key"
-  dest="${RESTORE_TARGETS[$key]}"
-
-  if [ -e "$src" ]; then
-    # Backup current destination if exists
-    if [ -e "$dest" ]; then
-      echo -e "${RED}🛑 $dest already exists. Creating backup at $dest.restore.bak...${NC}"
-      cp -r "$dest" "$dest.restore.bak"
-    fi
-
-    echo -e "${GREEN}✅ Restoring $key → $dest${NC}"
+for src in "${!FILES[@]}"; do
+  dest="${FILES[$src]}"
+  if [ -e "./$src" ]; then
+    echo "📁 Restoring $src → $dest"
     mkdir -p "$(dirname "$dest")"
-    cp -r "$src" "$dest"
+    cp -r "./$src" "$dest"
   else
-    echo -e "${YELLOW}⚠️  $src not found — skipping.${NC}"
+    echo "⚠️  Missing: $src — skipping"
   fi
 done
 
-echo -e "\n${GREEN}🎉 Restore completed!"
-echo -e "${YELLOW}➡️  Run this to apply your config: ${NC}source ~/.zshrc"
+# --- Set Zsh as default ---
+if [[ "$SHELL" != "/usr/bin/zsh" ]]; then
+  echo -e "\n⚙️ Changing shell to zsh..."
+  chsh -s /usr/bin/zsh
+fi
 
+echo -e "\n🎉 Done! Run this to apply your new config:\n\n  source ~/.zshrc\n"
