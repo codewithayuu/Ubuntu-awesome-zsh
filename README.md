@@ -52,12 +52,11 @@ chmod +x install-zsh.sh
 source ~/.zshrc
 
 
-## 🧹 Uninstallation
+To remove the config from system:
 
 
 ```bash
 ./uninstall-zsh.sh
-```
 
 This script will:
 
