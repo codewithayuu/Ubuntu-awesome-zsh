@@ -92,23 +92,51 @@ If you’ve made personal edits, **back them up first**.
 
 ---
 
-## 💬 FAQs
+## 💬 Frequently Asked Questions (FAQ)
 
-* ❓ **Script failed during installation?**
-  Just rerun the script. It's idempotent and safe.
+<details>
+<summary>❓ <strong>Script failed during installation?</strong></summary>
 
-* ❓ **Prompt/theme not applied after install?**
-  Log out and log back in, or restart the terminal.
+Rerun the script using:
 
-* ❓ **Missing a package?**
-  Manually install it via:
+```bash
+./install-zsh.sh
+```
 
-  ```bash
-  sudo apt install <package-name>
-  ```
+It’s idempotent — safe to run multiple times.
 
-* ❓ **Icons not showing properly?**
-  Change your terminal font to **JetBrainsMono Nerd Font** after installation.
+</details>
+
+<details>
+<summary>❓ <strong>Prompt or theme not applied after install?</strong></summary>
+
+Try the following steps:
+
+* Run `source ~/.zshrc`
+* Or **log out and log back in**
+* Or restart your terminal
+
+</details>
+
+<details>
+<summary>❓ <strong>Missing a package?</strong></summary>
+
+Manually install it with:
+
+```bash
+sudo apt install <package-name>
+```
+
+</details>
+
+<details>
+<summary>❓ <strong>Icons not showing properly?</strong></summary>
+
+Make sure your terminal is using the correct font:
+
+> Set it to: **JetBrainsMono Nerd Font**
+
+</details>
 
 ---
 
