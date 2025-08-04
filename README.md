@@ -73,12 +73,29 @@ This script will:
   * Zoxide binary and data
 * Clear font cache for a clean terminal state
 
----
+
 
 ### ⚠️ Warning
 
 This **permanently deletes** all related configs and binaries.
 If you made personal edits, **back them up** before running.
+
+
+
+---
+## 💬 FAQs
+
+
+--> If Installation scipt fails, please rerun the installation script it will solve the issue
+
+--> If Installation doen but config not applied, then Log Out and Log back in. 
+
+
+--> If any package failed to install, then manually install it using 
+```bash
+sudo apt install <package name> 
+```
+--> After installation please change the terminal font to "JetBrainsMono", in order to display icons in terminal correctly.
 
 ---
 
