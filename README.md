@@ -1,4 +1,4 @@
-# ⚡ My's Zsh Environment
+# ⚡ My Zsh Environment
 
 A blazing fast and minimal Zsh setup powered by ⚡ **Zinit**, 🚀 **Starship**, 🔍 **fzf**, 🧠 **Autosuggestions**, 🖌️ **Syntax Highlighting**, and more.
 
