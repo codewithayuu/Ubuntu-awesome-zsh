@@ -1,5 +1,9 @@
-# ⚡ Ayush's Zsh Environment
+# ⚡ Ubuntu's awesome Zsh Setup
 
+⚠️Warning!! Please install starship before running the scipt.
+---
+I will update the install script later on with added features.
+---
 A blazing fast and minimal Zsh setup powered by ⚡ **Zinit**, 🚀 **Starship**, 🔍 **fzf**, 🧠 **Autosuggestions**, 🖌️ **Syntax Highlighting**, and more.
 
 ---
